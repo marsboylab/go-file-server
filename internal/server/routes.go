@@ -12,7 +12,6 @@ func RegisterRoutes(r *chi.Mux, fs *FileService) {
         _, _ = w.Write([]byte("ok"))
     })
 
-    // API docs
     r.Get("/openapi.json", OpenAPIHandler)
     r.Get("/docs", SwaggerUIHandler)
 
