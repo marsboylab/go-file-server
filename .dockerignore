@@ -1,0 +1,65 @@
+# Git 관련
+.git
+.gitignore
+.gitattributes
+
+# Docker 관련
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# 문서
+README.md
+*.md
+docs/
+
+# 테스트 파일
+*_test.go
+test/
+coverage.out
+
+# 임시 파일
+*.tmp
+*.log
+*.swp
+*.swo
+*~
+
+# OS 생성 파일
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE/에디터 파일
+.vscode/
+.idea/
+*.iml
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# 빌드 결과물
+/bin
+/dist
+/build
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go 관련
+vendor/
+.env
+.env.local
+.env.*.local
+
+# 런타임 데이터
+storage/
+logs/
+*.pid

@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+  go-file-server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: go-file-server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - ROOT_DIR=/app/storage
+      - TZ=Asia/Seoul
+    volumes:
+      # 파일 저장소를 호스트에 마운트 (데이터 영속성)
+      - file_storage:/app/storage
+      # 또는 로컬 디렉토리를 마운트하려면 아래 주석을 해제하고 위 라인을 주석 처리
+      # - ./storage:/app/storage
+    networks:
+      - file-server-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8080/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.example.description=Go File Server"
+      - "com.example.department=backend"
+
+  # 선택사항: Nginx 리버스 프록시 (프로덕션 환경용)
+  nginx:
+    image: nginx:alpine
+    container_name: go-file-server-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro # SSL 인증서가 있는 경우
+    depends_on:
+      go-file-server:
+        condition: service_healthy
+    networks:
+      - file-server-network
+    profiles:
+      - production # docker-compose --profile production up 으로 실행
+
+volumes:
+  file_storage:
+    driver: local
+    labels:
+      - "com.example.description=Go File Server Storage"
+
+networks:
+  file-server-network:
+    driver: bridge
+    labels:
+      - "com.example.description=Go File Server Network"
